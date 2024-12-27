@@ -44,7 +44,7 @@ public class Throwing : MonoBehaviour
             }
 
         }
-        Debug.Log(throwForce);
+        
         if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
         {
             Throw();
