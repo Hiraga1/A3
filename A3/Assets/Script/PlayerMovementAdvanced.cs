@@ -23,6 +23,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public float jumpCooldown;
     public float airMultiplier;
     bool readyToJump;
+    public bool canDoubleJump;
 
     [Header("Crouching")]
     public float crouchSpeed;
@@ -92,7 +93,11 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
         // handle drag
         if (grounded)
+        {
+            canDoubleJump = true;
             rb.drag = groundDrag;
+        }
+
         else
             rb.drag = 0;
         if (Input.GetKey(KeyCode.Mouse0))
@@ -121,6 +126,12 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
             Invoke(nameof(ResetJump), jumpCooldown);
         }
+        else if (Input.GetKeyDown(jumpKey) && canDoubleJump)
+        {
+            Jump();
+            canDoubleJump = false;
+        }
+       
 
         // start crouch
         if (Input.GetKeyDown(crouchKey))
@@ -268,14 +279,14 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
     }
 
-    private void Jump()
+    public void Jump()
     {
         exitingSlope = true;
 
         // reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.velocity = Vector3.up * jumpForce;
 
-        rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        
     }
     private void ResetJump()
     {

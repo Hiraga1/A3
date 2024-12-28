@@ -4,30 +4,43 @@ using UnityEngine;
 
 public class CameraView : MonoBehaviour
 {
-    [Header("References")]
-    public Transform orientation;
-    public Transform player;
-    public Transform playerObject;
-    public Rigidbody rb;
+    [Header("Cameras")]
+    public GameObject camTPP;
+    public GameObject camFPP;
+    public TPPThrowing TPPshooting;
+    public Throwing shooting;
 
-    public float rotationSpeed;
+   
+
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        camTPP.SetActive(true);
+        shooting.enabled = false;
+        TPPshooting.enabled = true;
+        camFPP.SetActive(false);
+        
     }
 
     private void Update()
     {
-        Vector3 viewDirection = player.position - new Vector3(transform.position.z, player.position.y, transform.position.z);
-        orientation.forward = viewDirection.normalized;
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            camTPP.SetActive(false);
+            camFPP.SetActive(true);
+            TPPshooting.enabled = false;
+            shooting.enabled = true;
+            
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            camTPP.SetActive(true);
+            camFPP.SetActive(false);
+            shooting.enabled = false;
+            TPPshooting.enabled = true;
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-        if(inputDirection != Vector3.zero )
-            playerObject.forward = Vector3.Slerp(playerObject.forward, inputDirection.normalized, Time.deltaTime * rotationSpeed);
+        }
     }
 }

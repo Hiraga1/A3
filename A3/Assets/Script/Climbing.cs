@@ -78,7 +78,13 @@ public class Climbing : MonoBehaviour
             if (climbing) StopClimbing();
         }
 
-        if (wallFront && Input.GetKeyDown(jumpKey) && climbJumpsLeft > 0) ClimbJump();
+        if (wallFront && Input.GetKeyDown(jumpKey) && climbJumpsLeft > 0)
+        {
+            ClimbJump();
+            pm.canDoubleJump = true;
+        }
+
+        
     }
 
     private void WallCheck()

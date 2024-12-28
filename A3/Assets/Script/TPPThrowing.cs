@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Throwing : MonoBehaviour
+public class TPPThrowing : MonoBehaviour
 {
-    public Transform cam;
-    
-    public Transform attackPoint;
-    
+    public Transform camTPP;
+
+    public Transform attackPointTPP;
+
     public GameObject throwing;
 
     public float CD;
@@ -23,8 +23,8 @@ public class Throwing : MonoBehaviour
     void Start()
     {
         readytoThrow = true;
-        
-        
+
+
     }
 
     // Update is called once per frame
@@ -33,13 +33,13 @@ public class Throwing : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Mouse0))
         {
-            
+
             throwForce++;
             if (throwForce > maxThrowForce)
             {
                 throwForce = maxThrowForce;
             }
-            
+
         }
         else
         {
@@ -50,29 +50,29 @@ public class Throwing : MonoBehaviour
             }
 
         }
-        
+
         if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
         {
             Throw();
-            
+
         }
     }
 
     private void Throw()
     {
-       readytoThrow = false;
+        readytoThrow = false;
 
-        GameObject projectile = Instantiate(throwing, attackPoint.position, cam.rotation);
+        GameObject projectile = Instantiate(throwing, attackPointTPP.position, camTPP.rotation);
 
         Rigidbody projectilerb = projectile.GetComponent<Rigidbody>();
 
-        Vector3 forceDirection = cam.transform.forward;
+        Vector3 forceDirection = camTPP.transform.forward;
 
         RaycastHit hit;
 
-        if(Physics.Raycast(cam.position, cam.forward, out hit, 500f))
+        if (Physics.Raycast(camTPP.position, camTPP.forward, out hit, 500f))
         {
-            forceDirection = (hit.point - attackPoint.position).normalized;
+            forceDirection = (hit.point - attackPointTPP.position).normalized;
         }
 
         Vector3 forceToAdd = forceDirection * throwForce + transform.up * upwardThrowForce;
@@ -81,12 +81,12 @@ public class Throwing : MonoBehaviour
 
         Invoke(nameof(Cooldown), CD);
     }
-    
+
 
 
     private void Cooldown()
     {
         readytoThrow = true;
     }
-   
+
 }
