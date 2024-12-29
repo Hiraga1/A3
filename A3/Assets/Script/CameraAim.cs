@@ -7,6 +7,11 @@ public class CameraAim : MonoBehaviour
     public Cinemachine.AxisState xAxis, yAxis;
     [SerializeField] Transform camTarget;
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
     private void Update()
     {
         xAxis.Update(Time.deltaTime);

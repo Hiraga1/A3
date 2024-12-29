@@ -33,7 +33,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
     [Header("Keybinds")]
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode crouchKey = KeyCode.C;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -66,11 +66,18 @@ public class PlayerMovementAdvanced : MonoBehaviour
         crouching,
         sliding,
         air,
-        climbing
+        climbing,
+        freeze,
+        swinging
+        
     }
 
     public bool sliding;
     public bool climbing;
+    public bool freeze;
+    public bool swinging;
+
+    public bool activeGrapple;
 
     private void Start()
     {
@@ -92,7 +99,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         StateHandler();
 
         // handle drag
-        if (grounded)
+        if (grounded && !activeGrapple)
         {
             canDoubleJump = true;
             rb.drag = groundDrag;
@@ -149,8 +156,15 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void StateHandler()
     {
+        //Mode - Freeze
+        if (freeze)
+        {
+            state = MovementState.freeze;
+            moveSpeed = 0;
+            rb.velocity = Vector3.zero;
+        }
         // Mode - Sliding
-        if (sliding)
+        else if (sliding)
         {
             state = MovementState.sliding;
 
@@ -231,6 +245,11 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void MovePlayer()
     {
+        if (activeGrapple)
+        {
+            return;
+        }
+
         if(climbingScript.exitingWall) return;
         // calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
@@ -245,8 +264,12 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
 
         // on ground
-        else if(grounded)
+        else if (grounded)
+        {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            
+
+        }
 
         // in air
         else if(!grounded)
@@ -258,6 +281,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void SpeedControl()
     {
+        if (activeGrapple)
+        {
+            return;
+        }
         // limiting speed on slope
         if (OnSlope() && !exitingSlope)
         {
@@ -284,7 +311,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         exitingSlope = true;
 
         // reset y velocity
-        rb.velocity = Vector3.up * jumpForce;
+        rb.velocity = new Vector3(rb.velocity.x,jumpForce, rb.velocity.z);
 
         
     }
@@ -293,6 +320,25 @@ public class PlayerMovementAdvanced : MonoBehaviour
         readyToJump = true;
 
         exitingSlope = false;
+    }
+    private bool enableMovementOnNextTouch;
+
+    public void JumpToPosition(Vector3 targetPosition, float trajectoryHeight)
+    {
+        activeGrapple = true;
+
+        velocityToSet = CalculateJumpVelocity(transform.position, targetPosition, trajectoryHeight);
+
+        Invoke(nameof(SetVelocity), 0.1f);
+    }
+
+    private Vector3 velocityToSet;
+
+    private void SetVelocity()
+    {
+        enableMovementOnNextTouch = true;
+
+        rb.velocity = velocityToSet;
     }
 
     public bool OnSlope()
@@ -307,8 +353,36 @@ public class PlayerMovementAdvanced : MonoBehaviour
         return false;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (enableMovementOnNextTouch)
+        {
+            enableMovementOnNextTouch = false;
+            ResetRestrictions();
+
+            GetComponent<Grappling>().StopGrapple();
+
+        }
+    }
+    public void ResetRestrictions()
+    {
+        activeGrapple = false;
+    }
+
     public Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+    public Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight)
+    {
+        float gravity = Physics.gravity.y;
+        float displacementY = endPoint.y - startPoint.y;
+        Vector3 displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+        Vector3 velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity)
+            + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+        return velocityXZ + velocityY;
     }
 }

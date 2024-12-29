@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class CameraView : MonoBehaviour
 {
-    [Header("Cameras")]
+    [Header("Objects")]
     public GameObject camTPP;
     public GameObject camFPP;
     public TPPThrowing TPPshooting;
-    public Throwing shooting;
-
+    public Throwing FPPshooting;
+    public GameObject camTPPVCam;
+    public GameObject GrapplingSphereFPP;
+    public GameObject GrapplingSphereTPP;
    
 
 
@@ -17,11 +19,13 @@ public class CameraView : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
         camTPP.SetActive(true);
-        shooting.enabled = false;
+        camTPPVCam.SetActive(true);
         TPPshooting.enabled = true;
+        FPPshooting.enabled = false;
         camFPP.SetActive(false);
-        
+        GrapplingSphereFPP.SetActive(false);
     }
 
     private void Update()
@@ -31,16 +35,21 @@ public class CameraView : MonoBehaviour
             camTPP.SetActive(false);
             camFPP.SetActive(true);
             TPPshooting.enabled = false;
-            shooting.enabled = true;
-            
+            FPPshooting.enabled = true;
+            camTPPVCam.SetActive(false);
+            GrapplingSphereTPP.SetActive(false);
+            GrapplingSphereFPP.SetActive(true);
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             camTPP.SetActive(true);
             camFPP.SetActive(false);
-            shooting.enabled = false;
+            FPPshooting.enabled = false;
             TPPshooting.enabled = true;
-
+            camTPPVCam.SetActive(true);
+            GrapplingSphereTPP.SetActive(true);
+            GrapplingSphereFPP.SetActive(false);
         }
     }
+    
 }
