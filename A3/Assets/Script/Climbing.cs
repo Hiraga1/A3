@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Climbing : MonoBehaviour
 {
@@ -54,7 +55,10 @@ public class Climbing : MonoBehaviour
     private void StateMachine()
     {
         // State 1 - Climbing
-        if (wallFront && Input.GetKey(KeyCode.W) && wallLookAngle < maxWallLookAngle && !exitingWall)
+        if ((Input.GetAxis("Vertical") > 0))
+        {
+
+        if (wallFront && wallLookAngle < maxWallLookAngle && !exitingWall)
         {
             if (!climbing && climbTimer > 0) StartClimbing();
 
@@ -62,12 +66,13 @@ public class Climbing : MonoBehaviour
             if (climbTimer > 0) climbTimer -= Time.deltaTime;
             if (climbTimer < 0) StopClimbing();
         }
+        }
 
         // State 2 - Exiting
         else if (exitingWall)
         {
             if (climbing) StopClimbing();
-
+            
             if (exitWallTimer > 0) exitWallTimer -= Time.deltaTime;
             if (exitWallTimer < 0) exitingWall = false;
         }
@@ -77,14 +82,11 @@ public class Climbing : MonoBehaviour
         {
             if (climbing) StopClimbing();
         }
-
-        if (wallFront && Input.GetKeyDown(jumpKey) && climbJumpsLeft > 0)
+        if (Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
-            ClimbJump();
-            pm.canDoubleJump = true;
-        }
+        if (wallFront && climbJumpsLeft > 0) ClimbJump();
 
-        
+        }
     }
 
     private void WallCheck()
@@ -115,7 +117,7 @@ public class Climbing : MonoBehaviour
     private void ClimbingMovement()
     {
         rb.velocity = new Vector3(rb.velocity.x, climbSpeed, rb.velocity.z);
-
+        
         /// idea - sound effect
     }
 
@@ -123,6 +125,7 @@ public class Climbing : MonoBehaviour
     {
         climbing = false;
         pm.climbing = false;
+        
 
         /// idea - particle effect
         /// idea - sound effect

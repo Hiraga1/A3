@@ -1811,11 +1811,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3205009886240822385, guid: bb2876dfa8c01d345b5c0da47e7a56fd, type: 3}
       propertyPath: m_LocalScale.x
-      value: 112.5
+      value: 112.683685
       objectReference: {fileID: 0}
     - target: {fileID: 3205009886240822385, guid: bb2876dfa8c01d345b5c0da47e7a56fd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 147.7
+      value: 147.6093
       objectReference: {fileID: 0}
     - target: {fileID: 3205009886240822385, guid: bb2876dfa8c01d345b5c0da47e7a56fd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2779,7 +2779,7 @@ Transform:
   m_GameObject: {fileID: 1653798138}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.4, y: 3.5, z: 0}
+  m_LocalPosition: {x: 79.4, y: 3.5, z: -85.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2829,7 +2829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 5
-  sprintSpeed: 15
+  sprintSpeed: 10
   slideSpeed: 30
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
@@ -2859,6 +2859,7 @@ MonoBehaviour:
   swinging: 0
   sprinting: 0
   activeGrapple: 0
+  jumping: 0
 --- !u!114 &1653798144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2877,10 +2878,10 @@ MonoBehaviour:
   whatIsWall:
     serializedVersion: 2
     m_Bits: 64
-  climbSpeed: 10
-  maxClimbTime: 10
-  climbJumpUpForce: 7
-  climbJumpBackForce: 10
+  climbSpeed: 9
+  maxClimbTime: 0.75
+  climbJumpUpForce: 14
+  climbJumpBackForce: 12
   jumpKey: 32
   climbJumps: 1
   detectionLength: 0.7
@@ -2888,7 +2889,7 @@ MonoBehaviour:
   maxWallLookAngle: 30
   minWallNormalAngleChange: 5
   exitingWall: 0
-  exitWallTime: 1
+  exitWallTime: 0.2
 --- !u!114 &1653798145
 MonoBehaviour:
   m_ObjectHideFlags: 0

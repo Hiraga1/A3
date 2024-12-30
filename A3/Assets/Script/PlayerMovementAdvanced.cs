@@ -19,6 +19,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
     
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
+    private float fallingSpeed;
 
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
@@ -76,8 +77,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
         climbing,
         freeze,
         swinging,
-        crouching
-        
+        crouching,
+        grappling,
+        jumping
     }
 
     public bool sliding;
@@ -86,6 +88,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public bool swinging;
     public bool sprinting;
     public bool activeGrapple;
+    
+    public bool jumping;
     
     private void Start()
     {
@@ -133,6 +137,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         MyInput();
         SpeedControl();
         StateHandler();
+        
 
         if (sprinting && grounded)
         {
@@ -242,13 +247,13 @@ public class PlayerMovementAdvanced : MonoBehaviour
                 readyToJump = false;
 
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-
+                jumping = true;
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
             else if (canDoubleJump)
             {
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
-
+                jumping = true;
                 canDoubleJump = false;
             }
         }
@@ -274,17 +279,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
             else
                 desiredMoveSpeed = sprintSpeed;
         }
-
-        // Mode - Crouching
-        
-
-
-
-
-        // Mode - Air
-        else
+        else 
         {
             state = MovementState.air;
+            
         }
 
         // check if desiredMoveSpeed has changed drastically
@@ -335,8 +333,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
             return;
         }
 
-        if(climbingScript.exitingWall) return;
-        // calculate movement direction
+        if (climbingScript.exitingWall) return;
+        //// calculate movement direction
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         // on slope
