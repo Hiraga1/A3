@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Grappling : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class Grappling : MonoBehaviour
 
     private Vector3 grapplePoint;
 
+    private InputActionAsset inputAsset;
+    private InputActionMap inputMap;
+    private InputAction action;
+
     [Header("Cooldown")]
     public float grappleCD;
     private float grappleCDTimer;
@@ -30,6 +35,31 @@ public class Grappling : MonoBehaviour
     void Start()
     {
         pm = GetComponent<PlayerMovementAdvanced>();
+    }
+    private void Awake()
+    {
+        inputAsset = this.GetComponent<PlayerInput>().actions;
+        inputMap = inputAsset.FindActionMap("Player");
+    }
+
+    private void OnEnable()
+    {
+        inputMap.FindAction("Grapple").started += Grapple;
+        inputMap = inputAsset.FindActionMap("Player");
+    }
+
+    private void Grapple(InputAction.CallbackContext context)
+    {
+        {
+            StartGrapple();
+            
+        }
+        
+    }
+
+    private void OnDisable()
+    {
+        inputMap = inputAsset.FindActionMap("Player");
     }
 
     private void LateUpdate()

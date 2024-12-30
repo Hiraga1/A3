@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Throwing : MonoBehaviour
 {
@@ -17,50 +18,68 @@ public class Throwing : MonoBehaviour
     public float maxThrowForce;
     public float upwardThrowForce;
 
-    bool readytoThrow;
+    //bool readytoThrow;
 
 
     void Start()
     {
-        readytoThrow = true;
+        //readytoThrow = true;
         
         
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
-        if (Input.GetKey(KeyCode.Mouse0))
+        
+        if (Gamepad.current.rightTrigger.isPressed)
         {
-            
-            throwForce++;
+            throwForce += 20 * Time.deltaTime;
             if (throwForce > maxThrowForce)
             {
                 throwForce = maxThrowForce;
             }
-            
-        }
-        else
-        {
-            throwForce--;
-            if (throwForce < 0)
-            {
-                throwForce = 1;
-            }
+           
 
         }
-        
-        if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
+        if (Gamepad.current.rightTrigger.wasReleasedThisFrame)
         {
             Throw();
-            
+            throwForce = 1;
+
+            //if (Input.GetKey(KeyCode.Mouse0))
+            //{
+
+            //    throwForce++;
+            //    if (throwForce > maxThrowForce)
+            //    {
+            //        throwForce = maxThrowForce;
+            //    }
+
+            //}
+            //else
+            //{
+            //    throwForce--;
+            //    if (throwForce < 1)
+            //    {
+            //        throwForce = 1;
+            //    }
+            //}
+
+
+            //if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow) 
+            //{
+            //    Throw();
+
+            //}
         }
     }
 
+    
+
     private void Throw()
     {
-       readytoThrow = false;
+       //readytoThrow = false;
 
         GameObject projectile = Instantiate(throwing, attackPoint.position, cam.rotation);
 
@@ -86,7 +105,7 @@ public class Throwing : MonoBehaviour
 
     private void Cooldown()
     {
-        readytoThrow = true;
+        //readytoThrow = true;
     }
    
 }

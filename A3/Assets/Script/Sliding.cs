@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Sliding : MonoBehaviour
 {
@@ -38,10 +39,22 @@ public class Sliding : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         if (Input.GetKeyDown(slideKey) && (horizontalInput != 0 || verticalInput != 0))
+        {
             StartSlide();
+        }
 
         if (Input.GetKeyUp(slideKey) && pm.sliding)
+        {
             StopSlide();
+        }
+        if (Gamepad.current.buttonWest.wasPressedThisFrame)
+        {
+            StartSlide();
+        }
+        if (Gamepad.current.buttonWest.wasReleasedThisFrame)
+        {
+            StopSlide() ;
+        }
     }
 
     private void FixedUpdate()

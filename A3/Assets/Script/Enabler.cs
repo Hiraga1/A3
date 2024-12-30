@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class CameraView : MonoBehaviour
 {
     [Header("Objects")]
@@ -40,7 +40,27 @@ public class CameraView : MonoBehaviour
             GrapplingSphereTPP.SetActive(false);
             GrapplingSphereFPP.SetActive(true);
         }
+        if (Gamepad.current.leftTrigger.isPressed)
+        {
+            camTPP.SetActive(false);
+            camFPP.SetActive(true);
+            TPPshooting.enabled = false;
+            FPPshooting.enabled = true;
+            camTPPVCam.SetActive(false);
+            GrapplingSphereTPP.SetActive(false);
+            GrapplingSphereFPP.SetActive(true);
+        }
         if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            camTPP.SetActive(true);
+            camFPP.SetActive(false);
+            FPPshooting.enabled = false;
+            TPPshooting.enabled = true;
+            camTPPVCam.SetActive(true);
+            GrapplingSphereTPP.SetActive(true);
+            GrapplingSphereFPP.SetActive(false);
+        }
+        if (Gamepad.current.leftTrigger.wasReleasedThisFrame)
         {
             camTPP.SetActive(true);
             camFPP.SetActive(false);

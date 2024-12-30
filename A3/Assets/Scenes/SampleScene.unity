@@ -1080,6 +1080,82 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb2876dfa8c01d345b5c0da47e7a56fd, type: 3}
+--- !u!1 &599933101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 599933103}
+  - component: {fileID: 599933102}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &599933102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599933101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_NotificationBehavior: 0
+  m_MaxPlayerCount: -1
+  m_AllowJoining: 1
+  m_JoinBehavior: 0
+  m_PlayerJoinedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_PlayerLeftEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_JoinAction:
+    m_UseReference: 0
+    m_Action:
+      m_Name: 
+      m_Type: 0
+      m_ExpectedControlType: 
+      m_Id: 59457098-6654-4473-a0ee-73bff6cda2e1
+      m_Processors: 
+      m_Interactions: 
+      m_SingletonActionBindings: []
+      m_Flags: 0
+    m_Reference: {fileID: 0}
+  m_PlayerPrefab: {fileID: 1653798138}
+  m_SplitScreen: 1
+  m_MaintainAspectRatioInSplitScreen: 0
+  m_FixedNumberOfSplitScreens: -1
+  m_SplitScreenRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!4 &599933103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599933101}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -23.315716, y: 6.041116, z: 1.1608342}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &634644485
 GameObject:
   m_ObjectHideFlags: 3
@@ -2686,6 +2762,7 @@ GameObject:
   - component: {fileID: 1653798151}
   - component: {fileID: 1653798152}
   - component: {fileID: 1653798153}
+  - component: {fileID: 1653798154}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2702,13 +2779,14 @@ Transform:
   m_GameObject: {fileID: 1653798138}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.4, y: 27, z: 0}
+  m_LocalPosition: {x: -34.4, y: 3.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1593968859}
   - {fileID: 2131767376}
   - {fileID: 940192667}
+  - {fileID: 2088009700}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1653798142
@@ -2751,7 +2829,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 5
-  sprintSpeed: 12
+  sprintSpeed: 15
   slideSpeed: 30
   speedIncreaseMultiplier: 1.5
   slopeIncreaseMultiplier: 2.5
@@ -2772,12 +2850,14 @@ MonoBehaviour:
   grounded: 0
   maxSlopeAngle: 50
   climbingScript: {fileID: 1653798144}
+  throwScript: {fileID: 1653798146}
   orientation: {fileID: 2131767376}
   state: 0
   sliding: 0
   climbing: 0
   freeze: 0
   swinging: 0
+  sprinting: 0
   activeGrapple: 0
 --- !u!114 &1653798144
 MonoBehaviour:
@@ -3037,6 +3117,36 @@ MonoBehaviour:
   overshootYAxis: 2
   grappleCD: 1
   grappleKey: 113
+--- !u!114 &1653798154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653798138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 8d7aeb542f0bad842981421c685aae36, type: 3}
+  m_NotificationBehavior: 3
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Player
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 790433369}
 --- !u!1001 &1813604790
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3618,7 +3728,7 @@ Transform:
   m_GameObject: {fileID: 2088009699}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 34.4, y: -25.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3627,7 +3737,7 @@ Transform:
   - {fileID: 1495945860}
   - {fileID: 1859042450}
   - {fileID: 1553292381}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1653798139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2088009701
 MonoBehaviour:
@@ -3861,7 +3971,6 @@ SceneRoots:
   - {fileID: 354348188}
   - {fileID: 1255621412}
   - {fileID: 1653798139}
-  - {fileID: 2088009700}
   - {fileID: 1182917124}
   - {fileID: 457119329}
   - {fileID: 1644745520}
@@ -3883,3 +3992,4 @@ SceneRoots:
   - {fileID: 1204192924}
   - {fileID: 1558788059}
   - {fileID: 986792167708531507}
+  - {fileID: 599933103}

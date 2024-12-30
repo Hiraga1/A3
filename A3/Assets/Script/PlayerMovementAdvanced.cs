@@ -1,15 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovementAdvanced : MonoBehaviour
 {
+    private InputActionAsset inputAsset;
+    private InputActionMap player;
+    private InputAction move;
+    private Third_Person_View ControllerControls;
+
     [Header("Movement")]
     private float moveSpeed;
     public float walkSpeed;
     public float sprintSpeed;
     public float slideSpeed;
-
+    
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
 
@@ -47,9 +54,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     [Header("References")]
     public Climbing climbingScript;
-    
+    public Throwing throwScript;
 
     public Transform orientation;
+    
 
     float horizontalInput;
     float verticalInput;
@@ -62,13 +70,13 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public enum MovementState
     {
         walking,
-        sprinting,
-        crouching,
+        sprinting,        
         sliding,
         air,
         climbing,
         freeze,
-        swinging
+        swinging,
+        crouching
         
     }
 
@@ -76,27 +84,93 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public bool climbing;
     public bool freeze;
     public bool swinging;
-
+    public bool sprinting;
     public bool activeGrapple;
-
+    
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
-
+        
         startYScale = transform.localScale.y;
     }
 
+    private void Awake()
+    {
+        inputAsset = this.GetComponent<PlayerInput>().actions;
+        player = inputAsset.FindActionMap("Player");
+        ControllerControls = new Third_Person_View();
+        ControllerControls.Player.SprintPressed.performed += x => SprintPress();
+        ControllerControls.Player.SprintReleased.performed += x => SprintRelease();
+    }
+
+
+
+    private void OnEnable()
+    {
+        
+        
+        ControllerControls.Enable();
+        player = inputAsset.FindActionMap("Player");
+    }
+   
+    
+
+    private void OnDisable()
+    {
+        
+        
+        ControllerControls.Disable();
+        player = inputAsset.FindActionMap("Player");
+    }
     private void Update()
     {
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-
+        
         MyInput();
         SpeedControl();
         StateHandler();
+
+        if (sprinting && grounded)
+        {
+            state = MovementState.sprinting;
+            desiredMoveSpeed = sprintSpeed;
+        }
+        else if (grounded) 
+        {
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
+        }
+        // crouching Gamepad
+        if (Gamepad.current.buttonEast.wasPressedThisFrame)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
+            state = MovementState.crouching;
+            desiredMoveSpeed = crouchSpeed;
+        }
+        else if (Gamepad.current.buttonEast.wasReleasedThisFrame)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
+        }
+        if (Keyboard.current.leftCtrlKey.wasPressedThisFrame)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
+            state = MovementState.crouching;
+            desiredMoveSpeed = crouchSpeed;
+        }
+        else if (Keyboard.current.leftCtrlKey.wasReleasedThisFrame)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            state = MovementState.walking;
+            desiredMoveSpeed = walkSpeed;
+        }
 
         // handle drag
         if (grounded && !activeGrapple)
@@ -111,8 +185,22 @@ public class PlayerMovementAdvanced : MonoBehaviour
         {
             moveSpeed = 2;
         }
+        if (Gamepad.current.rightTrigger.isPressed)
+        {
+            moveSpeed = 2;
+        }  
         
     }
+    
+    private void SprintPress()
+    {
+        sprinting = true;
+    }
+    private void SprintRelease()
+    {
+        sprinting = false;
+    }
+
 
     private void FixedUpdate()
     {
@@ -124,33 +212,45 @@ public class PlayerMovementAdvanced : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
+        // when to jump Gamepad
+        if(Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
-            readyToJump = false;
+            exitingSlope = true;
+            
+            if (readyToJump && grounded)
+            {
+                readyToJump = false;
 
-            Jump();
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
 
-            Invoke(nameof(ResetJump), jumpCooldown);
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+            else if (canDoubleJump)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+
+                canDoubleJump = false;
+            }
         }
-        else if (Input.GetKeyDown(jumpKey) && canDoubleJump)
+        // when to jump Keyboard
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            Jump();
-            canDoubleJump = false;
-        }
-       
+            exitingSlope = true;
 
-        // start crouch
-        if (Input.GetKeyDown(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
-            rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
-        }
+            if (readyToJump && grounded)
+            {
+                readyToJump = false;
 
-        // stop crouch
-        if (Input.GetKeyUp(crouchKey))
-        {
-            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+            else if (canDoubleJump)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce, rb.velocity.z);
+
+                canDoubleJump = false;
+            }
         }
     }
 
@@ -176,25 +276,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
 
         // Mode - Crouching
-        else if (Input.GetKey(crouchKey))
-        {
-            state = MovementState.crouching;
-            desiredMoveSpeed = crouchSpeed;
-        }
+        
 
-        // Mode - Sprinting
-        else if(grounded && Input.GetKey(sprintKey))
-        {
-            state = MovementState.sprinting;
-            desiredMoveSpeed = sprintSpeed;
-        }
 
-        // Mode - Walking
-        else if (grounded)
-        {
-            state = MovementState.walking;
-            desiredMoveSpeed = walkSpeed;
-        }
+
 
         // Mode - Air
         else
@@ -259,6 +344,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         {
             rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
 
+    
             if (rb.velocity.y > 0)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
         }
@@ -306,15 +392,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
     }
 
-    public void Jump()
-    {
-        exitingSlope = true;
-
-        // reset y velocity
-        rb.velocity = new Vector3(rb.velocity.x,jumpForce, rb.velocity.z);
-
-        
-    }
+    
+   
+    
     private void ResetJump()
     {
         readyToJump = true;

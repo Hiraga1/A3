@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TPPThrowing : MonoBehaviour
 {
@@ -17,12 +18,12 @@ public class TPPThrowing : MonoBehaviour
     public float maxThrowForce;
     public float upwardThrowForce;
 
-    bool readytoThrow;
+    //bool readytoThrow;
 
 
     void Start()
     {
-        readytoThrow = true;
+        //readytoThrow = true;
 
 
     }
@@ -30,37 +31,51 @@ public class TPPThrowing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetKey(KeyCode.Mouse0))
+        if (Gamepad.current.rightTrigger.isPressed)
         {
-
-            throwForce++;
+            throwForce += 20 * Time.deltaTime;
             if (throwForce > maxThrowForce)
             {
                 throwForce = maxThrowForce;
             }
 
-        }
-        else
-        {
-            throwForce--;
-            if (throwForce < 0)
-            {
-                throwForce = 1;
-            }
 
         }
-
-        if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
+        if (Gamepad.current.rightTrigger.wasReleasedThisFrame)
         {
             Throw();
+            throwForce = 1;
+            //if (Input.GetKey(KeyCode.Mouse0))
+            //{
 
+            //    throwForce++;
+            //    if (throwForce > maxThrowForce)
+            //    {
+            //        throwForce = maxThrowForce;
+            //    }
+
+            //}
+            //else
+            //{
+            //    throwForce--;
+            //    if (throwForce < 0)
+            //    {
+            //        throwForce = 1;
+            //    }
+
+            //}
+
+            //if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
+            //{
+            //    Throw();
+
+            //}
         }
     }
 
     private void Throw()
     {
-        readytoThrow = false;
+        //readytoThrow = false;
 
         GameObject projectile = Instantiate(throwing, attackPointTPP.position, camTPP.rotation);
 
@@ -86,7 +101,7 @@ public class TPPThrowing : MonoBehaviour
 
     private void Cooldown()
     {
-        readytoThrow = true;
+        //readytoThrow = true;
     }
 
 }
