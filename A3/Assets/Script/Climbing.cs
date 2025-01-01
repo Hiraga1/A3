@@ -58,7 +58,11 @@ public class Climbing : MonoBehaviour
             rightStickUp = false;
         }
         if (climbing && !exitingWall) ClimbingMovement();
+
         
+
+        
+
     }
 
     private void StateMachine()
@@ -121,7 +125,7 @@ public class Climbing : MonoBehaviour
 
         lastWall = frontWallHit.transform;
         lastWallNormal = frontWallHit.normal;
-
+         
         /// idea - camera fov change
     }
 
