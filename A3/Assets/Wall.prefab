@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 6542353914244005754}
   - component: {fileID: 5792380726681415882}
   - component: {fileID: 7170533366460183742}
+  - component: {fileID: 6377229389879083610}
   - component: {fileID: 5227202110811440420}
+  - component: {fileID: 4214246512290998646}
   m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
@@ -84,6 +86,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6377229389879083610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5096216622066841786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5917aa14f3af34aa302512755b0553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 50
 --- !u!65 &5227202110811440420
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -105,3 +120,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4214246512290998646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5096216622066841786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c5917aa14f3af34aa302512755b0553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 50

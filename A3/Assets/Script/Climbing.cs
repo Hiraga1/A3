@@ -44,21 +44,30 @@ public class Climbing : MonoBehaviour
     public float exitWallTime;
     private float exitWallTimer;
 
+    private bool rightStickUp;
     private void Update()
     {
         WallCheck();
         StateMachine();
-
+        if ((Input.GetAxis("Vertical") > 0))
+        {
+            rightStickUp = true;
+        }
+        else
+        {
+            rightStickUp = false;
+        }
         if (climbing && !exitingWall) ClimbingMovement();
+        
     }
 
     private void StateMachine()
     {
         // State 1 - Climbing
-        if ((Input.GetAxis("Vertical") > 0))
-        {
+        
+        
 
-        if (wallFront && wallLookAngle < maxWallLookAngle && !exitingWall)
+        if (wallFront && rightStickUp && wallLookAngle < maxWallLookAngle && !exitingWall)
         {
             if (!climbing && climbTimer > 0) StartClimbing();
 
@@ -66,7 +75,7 @@ public class Climbing : MonoBehaviour
             if (climbTimer > 0) climbTimer -= Time.deltaTime;
             if (climbTimer < 0) StopClimbing();
         }
-        }
+        
 
         // State 2 - Exiting
         else if (exitingWall)
@@ -89,18 +98,20 @@ public class Climbing : MonoBehaviour
         }
     }
 
-    private void WallCheck()
+    public void WallCheck()
     {
         wallFront = Physics.SphereCast(transform.position, sphereCastRadius, orientation.forward, out frontWallHit, detectionLength, whatIsWall);
         wallLookAngle = Vector3.Angle(orientation.forward, -frontWallHit.normal);
-
+        
         bool newWall = frontWallHit.transform != lastWall || Mathf.Abs(Vector3.Angle(lastWallNormal, frontWallHit.normal)) > minWallNormalAngleChange;
-
+        
         if ((wallFront && newWall) || pm.grounded)
         {
             climbTimer = maxClimbTime;
             climbJumpsLeft = climbJumps;
+            
         }
+       
     }
 
     private void StartClimbing()
@@ -117,7 +128,7 @@ public class Climbing : MonoBehaviour
     private void ClimbingMovement()
     {
         rb.velocity = new Vector3(rb.velocity.x, climbSpeed, rb.velocity.z);
-        
+
         /// idea - sound effect
     }
 
