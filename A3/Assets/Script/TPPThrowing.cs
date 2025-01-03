@@ -44,34 +44,35 @@ public class TPPThrowing : MonoBehaviour
         if (Gamepad.current.rightTrigger.wasReleasedThisFrame)
         {
             Throw();
-            throwForce = 1;
-            //if (Input.GetKey(KeyCode.Mouse0))
-            //{
-
-            //    throwForce++;
-            //    if (throwForce > maxThrowForce)
-            //    {
-            //        throwForce = maxThrowForce;
-            //    }
-
-            //}
-            //else
-            //{
-            //    throwForce--;
-            //    if (throwForce < 0)
-            //    {
-            //        throwForce = 1;
-            //    }
-
-            //}
-
-            //if (Input.GetKeyUp(KeyCode.Mouse0) && readytoThrow)
-            //{
-            //    Throw();
-
-            //}
+            
         }
+        //if (Input.GetKey(KeyCode.Mouse0))
+        //{
+
+        //        throwForce += 20 * Time.deltaTime;
+        //        if (throwForce > maxThrowForce)
+        //        {
+        //            throwForce = maxThrowForce;
+        //        }
+
+        //    }
+        //else
+        //{
+        //    throwForce--;
+        //    if (throwForce < 0)
+        //    {
+        //        throwForce = 1;
+        //    }
+
+        //}
+
+        //if (Input.GetKeyUp(KeyCode.Mouse0))
+        //{
+        //    Throw();
+
+        //}
     }
+    
 
     private void Throw()
     {

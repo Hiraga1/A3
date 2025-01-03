@@ -53,7 +53,7 @@ public class Sliding : MonoBehaviour
         }
         if (Gamepad.current.buttonWest.wasReleasedThisFrame)
         {
-            StopSlide() ;
+            StopSlide();
         }
     }
 

@@ -114,18 +114,18 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void OnEnable()
     {
-        
-        
+
+
         ControllerControls.Enable();
         player = inputAsset.FindActionMap("Player");
     }
-   
-    
+
+
 
     private void OnDisable()
     {
-        
-        
+
+
         ControllerControls.Disable();
         player = inputAsset.FindActionMap("Player");
     }
@@ -163,14 +163,14 @@ public class PlayerMovementAdvanced : MonoBehaviour
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
         }
-        if (Keyboard.current.leftCtrlKey.wasPressedThisFrame)
+        if (Input.GetKeyDown(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
         }
-        else if (Keyboard.current.leftCtrlKey.wasReleasedThisFrame)
+        else if (Input.GetKeyUp(crouchKey)) 
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             state = MovementState.walking;
@@ -193,8 +193,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
         if (Gamepad.current.rightTrigger.isPressed)
         {
             moveSpeed = 2;
-        }  
-        
+        }
+
     }
     
     private void SprintPress()
@@ -218,10 +218,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump Gamepad
-        if(Gamepad.current.buttonSouth.wasPressedThisFrame)
+        if (Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
             exitingSlope = true;
-            
+
             if (readyToJump && grounded)
             {
                 readyToJump = false;

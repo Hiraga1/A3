@@ -36,6 +36,8 @@ public class Pendulum : MonoBehaviour
     private float tensionForce = 0f;
     private float gravityForce = 0f;
 
+    private float decelerationspeed;
+
 
     // Keep track of the current velocity
     Vector3 currentVelocity = new Vector3();
@@ -52,6 +54,7 @@ public class Pendulum : MonoBehaviour
         this.bobStartingPositionSet = true;
 
         this.PendulumInit();
+        decelerationspeed = 1f;
     }
 
 
@@ -87,6 +90,17 @@ public class Pendulum : MonoBehaviour
         /* */
 
         //this.Bob.transform.position = this.PendulumUpdate(this.Bob.transform.position, Time.deltaTime);
+        //if(Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    ResetPendulumForces();  
+        //}
+        if (this.currentVelocity != Vector3.zero)
+        {
+            PendulumDecelerate(this.currentVelocity.x);
+            PendulumDecelerate(this.currentVelocity.y);
+            PendulumDecelerate(this.currentVelocity.z
+                );
+        }
     }
 
 
@@ -110,6 +124,18 @@ public class Pendulum : MonoBehaviour
         this.currentStatePosition = this.Bob.transform.position;
     }
 
+    void PendulumDecelerate(float axis)
+    {
+        if (axis >0)
+        {
+            axis -= decelerationspeed * Time.deltaTime;
+        }
+        else if (axis < 0)
+        {
+            axis += decelerationspeed * Time.deltaTime;
+        }
+
+    }
     void PendulumInit()
     {
         // Get the initial rope length from how far away the bob is now
