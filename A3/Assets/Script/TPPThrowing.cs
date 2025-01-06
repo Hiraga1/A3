@@ -14,16 +14,17 @@ public class TPPThrowing : MonoBehaviour
 
     public float CD;
 
-    public float throwForce;
+    public float minthrowForce;
     public float maxThrowForce;
     public float upwardThrowForce;
+    private float currentThrowForce;
 
-    //bool readytoThrow;
+    bool readytoThrow;
 
 
     void Start()
     {
-        //readytoThrow = true;
+        readytoThrow = true;
 
 
     }
@@ -31,20 +32,20 @@ public class TPPThrowing : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Gamepad.current.rightTrigger.isPressed)
+        if (Gamepad.current.rightTrigger.isPressed && readytoThrow)
         {
-            throwForce += 20 * Time.deltaTime;
-            if (throwForce > maxThrowForce)
+            currentThrowForce += 20 * Time.deltaTime;
+            if (currentThrowForce > maxThrowForce)
             {
-                throwForce = maxThrowForce;
+                currentThrowForce = maxThrowForce;
             }
 
 
         }
-        if (Gamepad.current.rightTrigger.wasReleasedThisFrame)
+        if (Gamepad.current.rightTrigger.wasReleasedThisFrame && readytoThrow) 
         {
             Throw();
-            
+            currentThrowForce = minthrowForce;
         }
         //if (Input.GetKey(KeyCode.Mouse0))
         //{
@@ -76,7 +77,7 @@ public class TPPThrowing : MonoBehaviour
 
     private void Throw()
     {
-        //readytoThrow = false;
+        readytoThrow = false;
 
         GameObject projectile = Instantiate(throwing, attackPointTPP.position, camTPP.rotation);
 
@@ -91,7 +92,7 @@ public class TPPThrowing : MonoBehaviour
             forceDirection = (hit.point - attackPointTPP.position).normalized;
         }
 
-        Vector3 forceToAdd = forceDirection * throwForce + transform.up * upwardThrowForce;
+        Vector3 forceToAdd = forceDirection * currentThrowForce + transform.up * upwardThrowForce;
 
         projectilerb.AddForce(forceToAdd, ForceMode.Impulse);
 
@@ -102,7 +103,7 @@ public class TPPThrowing : MonoBehaviour
 
     private void Cooldown()
     {
-        //readytoThrow = true;
+        readytoThrow = true;
     }
 
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Slope
+  - Bullet
+  - Vault
   layers:
   - Default
   - TransparentFX
@@ -16,7 +18,7 @@ TagManager:
   - whatIsWall
   - whatIsGrapplable
   - 
-  - 
+  - Obstacles
   - whatIsGround
   - Player 1 Cam
   - Player 2 Cam

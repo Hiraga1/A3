@@ -16,10 +16,12 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public float walkSpeed;
     public float sprintSpeed;
     public float slideSpeed;
-    
+    public float wallrunSpeed;
     private float desiredMoveSpeed;
     private float lastDesiredMoveSpeed;
-    private float fallingSpeed;
+    private float rotationSpeed;
+
+
 
     public float speedIncreaseMultiplier;
     public float slopeIncreaseMultiplier;
@@ -32,6 +34,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public float airMultiplier;
     bool readyToJump;
     public bool canDoubleJump;
+    bool readyToLeap;
+    public float leapCD;
 
     [Header("Crouching")]
     public float crouchSpeed;
@@ -46,7 +50,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask whatIsGround;
-    public  bool grounded;
+    public bool grounded;
 
     [Header("Slope Handling")]
     public float maxSlopeAngle;
@@ -56,12 +60,19 @@ public class PlayerMovementAdvanced : MonoBehaviour
     [Header("References")]
     public Climbing climbingScript;
     public Throwing throwScript;
-
+    public PlayerStatus status;
     public Transform orientation;
-    
+
+    [Header("Falling")]
+    public float maxFallingThreshold = 15;
+
 
     float horizontalInput;
     float verticalInput;
+
+    [Header("Animation")]
+    private Animator characterAnimator;
+
 
     Vector3 moveDirection;
 
@@ -79,7 +90,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
         swinging,
         crouching,
         grappling,
-        jumping
+        jumping,
+        leaping,
+        wallrunning
     }
 
     public bool sliding;
@@ -88,8 +101,11 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public bool swinging;
     public bool sprinting;
     public bool activeGrapple;
-    
+    public bool leaping;
     public bool jumping;
+    public bool wallrunning;
+
+    public bool inAction;
     
     private void Start()
     {
@@ -131,13 +147,19 @@ public class PlayerMovementAdvanced : MonoBehaviour
     }
     private void Update()
     {
-        // ground check
+        bool previousGrounded = grounded;
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-        
+        Debug.Log(state);
         MyInput();
         SpeedControl();
         StateHandler();
-        
+        if(!previousGrounded && grounded)
+        {
+            if(rb.velocity.y < -maxFallingThreshold)
+            {
+                status.Stun();
+            }
+        }
 
         if (sprinting && grounded)
         {
@@ -150,14 +172,14 @@ public class PlayerMovementAdvanced : MonoBehaviour
             desiredMoveSpeed = walkSpeed;
         }
         // crouching Gamepad
-        if (Gamepad.current.buttonEast.wasPressedThisFrame)
+        if (Gamepad.current.buttonWest.wasPressedThisFrame)
         {
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
             rb.AddForce(Vector3.down * 10f, ForceMode.Impulse);
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
         }
-        else if (Gamepad.current.buttonEast.wasReleasedThisFrame)
+        else if (Gamepad.current.buttonWest.wasReleasedThisFrame)
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             state = MovementState.walking;
@@ -194,6 +216,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         {
             moveSpeed = 2;
         }
+        
 
     }
     
@@ -212,13 +235,13 @@ public class PlayerMovementAdvanced : MonoBehaviour
         MovePlayer();
     }
 
-    private void MyInput()
+    public void MyInput()
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
         // when to jump Gamepad
-        if (Gamepad.current.buttonSouth.wasPressedThisFrame)
+        if (Gamepad.current.buttonEast.wasPressedThisFrame)
         {
             exitingSlope = true;
 
@@ -237,6 +260,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
                 canDoubleJump = false;
             }
         }
+       
         // when to jump Keyboard
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
@@ -261,6 +285,12 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void StateHandler()
     {
+        // Mode - Wallrunning
+        if (wallrunning)
+        {
+            state = MovementState.wallrunning;
+            desiredMoveSpeed = wallrunSpeed;
+        }
         //Mode - Freeze
         if (freeze)
         {
@@ -279,11 +309,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
             else
                 desiredMoveSpeed = sprintSpeed;
         }
-        else 
-        {
-            state = MovementState.air;
-            
-        }
+        
 
         // check if desiredMoveSpeed has changed drastically
         if(Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
@@ -463,4 +489,41 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
         return velocityXZ + velocityY;
     }
+    public IEnumerator PerformVaulting(string animName, MatchTargetParameters matchTargetParameters = null, Quaternion targetRotation = new Quaternion(), bool shouldRotate = false, bool mirrored = false)
+    {
+        inAction = true;
+
+        yield return null;
+
+        var animState = characterAnimator.GetNextAnimatorStateInfo(0);
+
+        float rotateStartTime = (matchTargetParameters != null) ? matchTargetParameters.matchStartTime : 0;
+
+        float time = 0.0f;
+
+        while (time <= animState.length)
+        {
+            time += Time.deltaTime;
+            float normalizedTime = time / animState.length;
+
+            if (shouldRotate && normalizedTime > rotateStartTime)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+        if (matchTargetParameters != null)
+            MatchTarget(matchTargetParameters);
+
+        yield return null;
+        }
+        inAction = false;
+    }
+
+    private void MatchTarget(MatchTargetParameters matchtargetParams)
+    {
+        if (characterAnimator.isMatchingTarget || characterAnimator.IsInTransition(0)) return;
+
+        characterAnimator.MatchTarget(matchtargetParams.matchPos, transform.rotation, matchtargetParams.matchBodyPart, new MatchTargetWeightMask(matchtargetParams.matchPosWeight, 0.0f), matchtargetParams.matchStartTime, matchtargetParams.matchTargetTime);
+    }
+    
+    
 }

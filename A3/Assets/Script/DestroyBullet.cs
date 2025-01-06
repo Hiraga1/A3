@@ -10,5 +10,6 @@ public class DestroyBullet : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        
     }
 }

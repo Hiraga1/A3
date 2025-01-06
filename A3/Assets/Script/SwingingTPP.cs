@@ -1,18 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SwingingDone : MonoBehaviour
+public class SwingingTPP : MonoBehaviour
 {
     [Header("References")]
     public LineRenderer lr;
     public Transform gunTip, cam, player;
     public LayerMask whatIsGrappleable;
     public PlayerMovementAdvanced pm;
+    public GrapplingTPP gp;
+
 
     [Header("Swinging")]
-    private float maxSwingDistance = 1f;
+    private float maxSwingDistance = 25f;
     private Vector3 swingPoint;
     private SpringJoint joint;
 
@@ -28,13 +31,35 @@ public class SwingingDone : MonoBehaviour
     public float predictionSphereCastRadius;
     public Transform predictionPoint;
 
-    
+    [Header("Input")]
+    public KeyCode swingKey = KeyCode.Mouse0;
+
+
+
 
 
     private void Update()
     {
-        if(Gamepad.current.buttonSouth.wasPressedThisFrame) StartSwing();
-        if (Gamepad.current.buttonSouth.wasReleasedThisFrame) StopSwing();
+        if (Input.GetKeyDown(swingKey))
+        {
+            gp.enabled = false;
+            StartSwing();
+        }
+        if (Input.GetKeyUp(swingKey))
+        {
+            gp.enabled = true;
+            StopSwing();
+        }
+        if (Gamepad.current.rightShoulder.wasPressedThisFrame)
+        {
+            gp.enabled = false;
+            StartSwing();
+        }
+        if (Gamepad.current.rightShoulder.wasReleasedThisFrame)
+        {
+            gp.enabled = true;
+            StopSwing();
+        }
 
         CheckForSwingPoints();
 
@@ -150,8 +175,25 @@ public class SwingingDone : MonoBehaviour
             joint.maxDistance = distanceFromPoint * 0.8f;
             joint.minDistance = distanceFromPoint * 0.25f;
         }
+        if (Gamepad.current.dpad.up.isPressed)
+        {
+            Vector3 directionToPoint = swingPoint - transform.position;
+            rb.AddForce(directionToPoint.normalized * forwardThrustForce * Time.deltaTime);
+
+            float distanceFromPoint = Vector3.Distance(transform.position, swingPoint);
+
+            joint.maxDistance = distanceFromPoint * 0.8f;
+            joint.minDistance = distanceFromPoint * 0.25f;
+        }
         // extend cable
         if (Input.GetKey(KeyCode.S))
+        {
+            float extendedDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendCableSpeed;
+
+            joint.maxDistance = extendedDistanceFromPoint * 0.8f;
+            joint.minDistance = extendedDistanceFromPoint * 0.25f;
+        }
+        if (Gamepad.current.dpad.down.isPressed)
         {
             float extendedDistanceFromPoint = Vector3.Distance(transform.position, swingPoint) + extendCableSpeed;
 

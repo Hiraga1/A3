@@ -14,38 +14,39 @@ public class Throwing : MonoBehaviour
 
     public float CD;
 
-    public float throwForce;
+    public float minthrowForce;
     public float maxThrowForce;
     public float upwardThrowForce;
+    private float currentThrowForce;
 
-    //bool readytoThrow;
+    bool readytoThrow;
 
 
     void Start()
     {
-        //readytoThrow = true;
-        
-        
+        readytoThrow = true;
+
+
     }
 
     // Update is called once per frame
     private void Update()
     {
         
-        if (Gamepad.current.rightTrigger.isPressed)
+        if (Gamepad.current.rightTrigger.isPressed && readytoThrow)
         {
-            throwForce += 20 * Time.deltaTime;
-            if (throwForce > maxThrowForce)
+            currentThrowForce += 20 * Time.deltaTime;
+            if (currentThrowForce > maxThrowForce)
             {
-                throwForce = maxThrowForce;
+                currentThrowForce = maxThrowForce;
             }
            
 
         }
-        if (Gamepad.current.rightTrigger.wasReleasedThisFrame)
+        if (Gamepad.current.rightTrigger.wasReleasedThisFrame && readytoThrow)
         {
             Throw();
-            throwForce = 1;
+            currentThrowForce = minthrowForce;
 
             //if (Input.GetKey(KeyCode.Mouse0))
             //{
@@ -79,7 +80,7 @@ public class Throwing : MonoBehaviour
 
     private void Throw()
     {
-       //readytoThrow = false;
+        readytoThrow = false;
 
         GameObject projectile = Instantiate(throwing, attackPoint.position, cam.rotation);
 
@@ -89,12 +90,12 @@ public class Throwing : MonoBehaviour
 
         RaycastHit hit;
 
-        if(Physics.Raycast(cam.position, cam.forward, out hit, 500f))
+        if(Physics.Raycast(cam.position, cam.forward, out hit, 1000f))
         {
             forceDirection = (hit.point - attackPoint.position).normalized;
         }
 
-        Vector3 forceToAdd = forceDirection * throwForce + transform.up * upwardThrowForce;
+        Vector3 forceToAdd = forceDirection * currentThrowForce + transform.up * upwardThrowForce;
 
         projectilerb.AddForce(forceToAdd, ForceMode.Impulse);
 
@@ -105,7 +106,7 @@ public class Throwing : MonoBehaviour
 
     private void Cooldown()
     {
-        //readytoThrow = true;
+        readytoThrow = true;
     }
    
 }
