@@ -149,7 +149,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
     {
         bool previousGrounded = grounded;
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-        Debug.Log(state);
+        
         MyInput();
         SpeedControl();
         StateHandler();

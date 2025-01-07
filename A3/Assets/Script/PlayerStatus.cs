@@ -15,6 +15,14 @@ public class PlayerStatus : MonoBehaviour
     public LeapingTPP dash;
     public PlayerMovement aimFPP;
     public float stunDuration = 5f;
+    public GameObject stunParticle;
+    public GameObject stunParticle1;
+
+    private void Start()
+    {
+        stunParticle.SetActive(false);
+        stunParticle1.SetActive(false);
+    }
     public void Stun()
     {
         StartCoroutine("Stunned");
@@ -33,6 +41,8 @@ public class PlayerStatus : MonoBehaviour
                 TPPthrowing.enabled = false;
                 enabler.enabled = false;
                 dash.enabled = false;
+                stunParticle.SetActive (true);
+                stunParticle1.SetActive (true); 
             }
             yield return new WaitForSeconds(stunDuration);
             if (pm != null)
@@ -46,6 +56,8 @@ public class PlayerStatus : MonoBehaviour
                 TPPthrowing.enabled = true;
                 enabler.enabled = true;
                 dash.enabled = true;
+                stunParticle.SetActive (false);
+                stunParticle1.SetActive (false);
             }
         }
     }

@@ -7,7 +7,9 @@ public class ObjectFalling : MonoBehaviour
     public Rigidbody rb;
     private bool isFalling;
     public PlayerStatus status;
-    
+    [SerializeField] GameObject intactSphere;
+    [SerializeField] GameObject brokenSphere;
+    BoxCollider bc;
     
     
     private void Start()
@@ -15,7 +17,9 @@ public class ObjectFalling : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         GetComponent<Rigidbody>().isKinematic = true;
         isFalling = false;
-        
+        bc = GetComponent<BoxCollider>();
+        intactSphere.SetActive(true);
+        brokenSphere.SetActive(false);
     }
    
 
@@ -27,16 +31,21 @@ public class ObjectFalling : MonoBehaviour
             
             isFalling = true;
             rb.isKinematic = false;
+            
         }
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Destroy(gameObject);
+            intactSphere.SetActive(false);
+            brokenSphere.SetActive(true);
+            Destroy(gameObject, 5f);
         }
         if (isFalling && collision.gameObject.CompareTag("Player"))
         {
+            intactSphere.SetActive(false);
+            brokenSphere.SetActive(true);
             Debug.Log("Stunned");
             status.Stun();
-            Destroy(gameObject);
+            Destroy(gameObject, 5f);
         }
     }
 }
