@@ -130,7 +130,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 200170559150866964}
-  - {fileID: 7482005195191269071}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1321255463016278850
@@ -632,6 +631,7 @@ Transform:
   - {fileID: 3360050337610150008}
   - {fileID: 5783263513123032692}
   - {fileID: 8535418837280276512}
+  - {fileID: 7482005195191269071}
   m_Father: {fileID: 8622690625469230320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &3854761198127986103
@@ -866,6 +866,13 @@ MonoBehaviour:
   camTPPVCam: {fileID: 4430795351106991777}
   GrapplingSphereFPP: {fileID: 3611334139070732685}
   GrapplingSphereTPP: {fileID: 4828705358118167543}
+  cam: {fileID: 0}
+  aimFov: 40
+  firstFov: 10
+  smallCam: {fileID: 0}
+  firstPos: {x: 0, y: 0, z: 0}
+  aimPos: {x: -0.4, y: 0.5, z: 0}
+  currentFov: 0
 --- !u!114 &1981232221398150651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -917,6 +924,8 @@ MonoBehaviour:
   dash: {fileID: 0}
   aimFPP: {fileID: 1112069889814884970}
   stunDuration: 5
+  stunParticle: {fileID: 0}
+  stunParticle1: {fileID: 0}
 --- !u!114 &7835030295852187171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2170,7 +2179,7 @@ Transform:
   m_GameObject: {fileID: 8735972492972701773}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 71.60896, y: -57.63972, z: 4.4744487}
+  m_LocalPosition: {x: 34.400005, y: -25.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2179,7 +2188,7 @@ Transform:
   - {fileID: 8946941361622964872}
   - {fileID: 1637552521492318614}
   - {fileID: 3760262169159465306}
-  m_Father: {fileID: 8622690625469230320}
+  m_Father: {fileID: 200170559150866964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8170438907677580884
 MonoBehaviour:

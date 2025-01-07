@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,13 +13,25 @@ public class CameraView : MonoBehaviour
     public GameObject camTPPVCam;
     public GameObject GrapplingSphereFPP;
     public GameObject GrapplingSphereTPP;
-   
 
+
+    [Header("Aiming")]
+    public CinemachineVirtualCamera cam;
+    public float aimFov = 40;
+    public float firstFov = 10;
+    public Cinemachine3rdPersonFollow smallCam;
+    public Vector3 firstPos;
+    public Vector3 aimPos = new Vector3(-0.4f, 0.5f, 0f);
+    [HideInInspector] public float currentFov;
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        firstFov = 60;
+        smallCam = cam.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+        firstPos = smallCam.ShoulderOffset;
 
         camTPP.SetActive(true);
         camTPPVCam.SetActive(true);
@@ -32,43 +45,51 @@ public class CameraView : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Mouse1))
         {
-            camTPP.SetActive(false);
+            /*camTPP.SetActive(false);
             camFPP.SetActive(true);
             TPPshooting.enabled = false;
             FPPshooting.enabled = true;
             camTPPVCam.SetActive(false);
             GrapplingSphereTPP.SetActive(false);
-            GrapplingSphereFPP.SetActive(true);
+            GrapplingSphereFPP.SetActive(true);*/
+            cam.m_Lens.FieldOfView = aimFov;
+            smallCam.ShoulderOffset = firstPos + aimPos;
         }
         if (Gamepad.current.leftTrigger.isPressed)
         {
-            camTPP.SetActive(false);
+            /*camTPP.SetActive(false);
             camFPP.SetActive(true);
             TPPshooting.enabled = false;
             FPPshooting.enabled = true;
             camTPPVCam.SetActive(false);
             GrapplingSphereTPP.SetActive(false);
-            GrapplingSphereFPP.SetActive(true);
+            GrapplingSphereFPP.SetActive(true);*/
+            cam.m_Lens.FieldOfView = aimFov;
+            smallCam.ShoulderOffset = firstPos + aimPos;
         }
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
-            camTPP.SetActive(true);
+            /*camTPP.SetActive(true);
             camFPP.SetActive(false);
             FPPshooting.enabled = false;
             TPPshooting.enabled = true;
             camTPPVCam.SetActive(true);
             GrapplingSphereTPP.SetActive(true);
-            GrapplingSphereFPP.SetActive(false);
+            GrapplingSphereFPP.SetActive(false);*/
+            cam.m_Lens.FieldOfView = firstFov;
+            smallCam.ShoulderOffset = firstPos;
         }
         if (Gamepad.current.leftTrigger.wasReleasedThisFrame)
         {
-            camTPP.SetActive(true);
+            /*camTPP.SetActive(true);
             camFPP.SetActive(false);
             FPPshooting.enabled = false;
             TPPshooting.enabled = true;
             camTPPVCam.SetActive(true);
             GrapplingSphereTPP.SetActive(true);
-            GrapplingSphereFPP.SetActive(false);
+            GrapplingSphereFPP.SetActive(false);*/
+            cam.m_Lens.FieldOfView = firstFov;
+            smallCam.ShoulderOffset = firstPos;
         }
     }
     
