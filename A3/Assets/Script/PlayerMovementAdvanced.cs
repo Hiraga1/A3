@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ public class PlayerMovementAdvanced : MonoBehaviour
     private InputActionMap player;
     private InputAction move;
     private Third_Person_View ControllerControls;
+
+    InputHandler inputManager;
+    Vector3 moveDirection;
+    Rigidbody rb;
+    public Transform cameraObject;
+
+
 
     [Header("Movement")]
     private float moveSpeed;
@@ -74,15 +82,13 @@ public class PlayerMovementAdvanced : MonoBehaviour
     private Animator characterAnimator;
 
 
-    Vector3 moveDirection;
 
-    Rigidbody rb;
 
     public MovementState state;
     public enum MovementState
     {
         walking,
-        sprinting,        
+        sprinting,
         sliding,
         air,
         climbing,
@@ -106,26 +112,65 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public bool wallrunning;
 
     public bool inAction;
-    
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
         readyToJump = true;
-        
+
         startYScale = transform.localScale.y;
     }
 
     private void Awake()
     {
-        inputAsset = this.GetComponent<PlayerInput>().actions;
-        player = inputAsset.FindActionMap("Player");
-        ControllerControls = new Third_Person_View();
-        ControllerControls.Player.SprintPressed.performed += x => SprintPress();
-        ControllerControls.Player.SprintReleased.performed += x => SprintRelease();
+        inputManager = GetComponent<InputHandler>();
+         
+    }
+    private void HandleMovement()
+    {
+        moveDirection = cameraObject.forward * inputManager.verticalInput;
+        moveDirection = moveDirection + cameraObject.right * inputManager.horizontalInput;
+        moveDirection.Normalize(); ;
+        moveDirection.y = 0;
+
+        if (grounded)
+        {
+            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
+
+
+        }
+        else if (!grounded)
+            rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
+
+
+            if (rb.velocity.y > 0)
+                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
+        }
+
+        // on ground
+        else if (grounded)
+        {
+            rb.AddForce(moveDirection * moveSpeed * 10f, ForceMode.Force);
+
+
+        }
+
+        // in air
+        else if (!grounded)
+            rb.AddForce(moveDirection * moveSpeed * 10f * airMultiplier, ForceMode.Force);
+
+        // turn gravity off while on slope
     }
 
+    public void HandleAllMovement()
+    {
+        HandleMovement();
+    }
 
 
     private void OnEnable()
@@ -147,15 +192,16 @@ public class PlayerMovementAdvanced : MonoBehaviour
     }
     private void Update()
     {
+        Debug.Log(moveDirection);
         bool previousGrounded = grounded;
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
-        
+
         MyInput();
         SpeedControl();
         StateHandler();
-        if(!previousGrounded && grounded)
+        if (!previousGrounded && grounded)
         {
-            if(rb.velocity.y < -maxFallingThreshold)
+            if (rb.velocity.y < -maxFallingThreshold)
             {
                 status.Stun();
             }
@@ -166,7 +212,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
             state = MovementState.sprinting;
             desiredMoveSpeed = sprintSpeed;
         }
-        else if (grounded) 
+        else if (grounded)
         {
             state = MovementState.walking;
             desiredMoveSpeed = walkSpeed;
@@ -192,7 +238,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
             state = MovementState.crouching;
             desiredMoveSpeed = crouchSpeed;
         }
-        else if (Input.GetKeyUp(crouchKey)) 
+        else if (Input.GetKeyUp(crouchKey))
         {
             transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
             state = MovementState.walking;
@@ -216,10 +262,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
         {
             moveSpeed = 2;
         }
-        
+
 
     }
-    
+
     private void SprintPress()
     {
         sprinting = true;
@@ -232,13 +278,14 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void FixedUpdate()
     {
-        MovePlayer();
+        if (climbingScript.exitingWall) return;
+
+        rb.useGravity = !OnSlope();
     }
 
     public void MyInput()
     {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        
 
         // when to jump Gamepad
         if (Gamepad.current.buttonEast.wasPressedThisFrame)
@@ -260,7 +307,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
                 canDoubleJump = false;
             }
         }
-       
+
         // when to jump Keyboard
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
@@ -309,10 +356,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
             else
                 desiredMoveSpeed = sprintSpeed;
         }
-        
+
 
         // check if desiredMoveSpeed has changed drastically
-        if(Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
         {
             StopAllCoroutines();
             StartCoroutine(SmoothlyLerpMoveSpeed());
@@ -352,42 +399,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         moveSpeed = desiredMoveSpeed;
     }
 
-    private void MovePlayer()
-    {
-        if (activeGrapple)
-        {
-            return;
-        }
-
-        if (climbingScript.exitingWall) return;
-        //// calculate movement direction
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-        // on slope
-        if (OnSlope() && !exitingSlope)
-        {
-            rb.AddForce(GetSlopeMoveDirection(moveDirection) * moveSpeed * 20f, ForceMode.Force);
-
-    
-            if (rb.velocity.y > 0)
-                rb.AddForce(Vector3.down * 80f, ForceMode.Force);
-        }
-
-        // on ground
-        else if (grounded)
-        {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-            
-
-        }
-
-        // in air
-        else if(!grounded)
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
-
-        // turn gravity off while on slope
-        rb.useGravity = !OnSlope();
-    }
+   
 
     private void SpeedControl()
     {
@@ -416,9 +428,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
         }
     }
 
-    
-   
-    
+
+
+
     private void ResetJump()
     {
         readyToJump = true;
@@ -447,9 +459,9 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     public bool OnSlope()
     {
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
         {
-            
+
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
@@ -510,10 +522,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
-        if (matchTargetParameters != null)
-            MatchTarget(matchTargetParameters);
+            if (matchTargetParameters != null)
+                MatchTarget(matchTargetParameters);
 
-        yield return null;
+            yield return null;
         }
         inAction = false;
     }
@@ -524,6 +536,6 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
         characterAnimator.MatchTarget(matchtargetParams.matchPos, transform.rotation, matchtargetParams.matchBodyPart, new MatchTargetWeightMask(matchtargetParams.matchPosWeight, 0.0f), matchtargetParams.matchStartTime, matchtargetParams.matchTargetTime);
     }
-    
-    
+
+
 }

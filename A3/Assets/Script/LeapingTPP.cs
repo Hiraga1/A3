@@ -46,7 +46,7 @@ public class LeapingTPP : MonoBehaviour
         if (leapCD < 0) leapCD = 0;
     }
 
-    private void MovementDash()
+    public void MovementDash()
     {
         rb.drag = 0;
         Vector3 inputDirection = orientation.forward * verticalMovement + orientation.right * horizontalMovement;

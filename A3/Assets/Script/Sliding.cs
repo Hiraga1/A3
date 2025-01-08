@@ -47,11 +47,11 @@ public class Sliding : MonoBehaviour
         {
             StopSlide();
         }
-        if (Gamepad.current.buttonWest.wasPressedThisFrame)
+        if (Gamepad.current.leftShoulder.wasPressedThisFrame)
         {
             StartSlide();
         }
-        if (Gamepad.current.buttonWest.wasReleasedThisFrame)
+        if (Gamepad.current.leftShoulder.wasReleasedThisFrame)
         {
             StopSlide();
         }

@@ -29,7 +29,7 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Move"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""351f2ccd-1f9f-44bf-9bec-d62ac5c5f408"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
@@ -91,24 +91,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Grapple"",
-                    ""type"": ""Button"",
-                    ""id"": ""ac3b5a89-4e0e-47f3-8eeb-da47dd4ee47c"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""RopeUp"",
-                    ""type"": ""Button"",
-                    ""id"": ""437b151f-6912-4d6c-9f6c-7f00d86b824f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""FPP Mode"",
                     ""type"": ""Button"",
                     ""id"": ""523eaee1-7150-4d7b-8d72-ad5635bce1e3"",
@@ -161,29 +143,9 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""RopeDown"",
-                    ""type"": ""Button"",
-                    ""id"": ""c5083bab-f4d9-4603-a3bf-e1797d78aa09"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""978bfe49-cc26-4a3d-ab7b-7d7a29327403"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": ""WASD"",
                     ""id"": ""00ca640b-d935-4593-8157-c05846ea39b3"",
@@ -284,6 +246,61 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""5638b637-b152-4e86-8631-c2b4aa261096"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""2885491c-41ba-4849-9bad-13b360d27305"",
+                    ""path"": ""<Gamepad>/leftStick/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""4ca3de47-9473-4ffc-8942-c5357b1e3caf"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""89f9f1d7-e4b2-4d90-9fba-067020aba14f"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""e78b7202-a688-4926-a5f4-c69ddf811c72"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
                     ""id"": ""c1f7a91b-d0fd-4a62-997e-7fb9b69bf235"",
                     ""path"": ""<Gamepad>/rightStick"",
@@ -362,11 +379,11 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""daba33a1-ad0c-4742-a909-43ad1cdfbeb6"",
+                    ""id"": ""841c1070-d138-453d-b327-83fbac2484b4"",
                     ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Gamepad"",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -412,39 +429,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Dash"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d62d0402-fd8f-4199-a528-8f362b79c6f0"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Grapple"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9b2f1fc7-a922-4182-94ef-df3c19d0c0f0"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""Grapple"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5192dd52-c760-4045-94ca-a197a61ee8f2"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Gamepad"",
-                    ""action"": ""RopeUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -577,17 +561,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Release"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""903cd7aa-1ed3-46c1-8649-1459a3bf8c01"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RopeDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1182,15 +1155,12 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
         m_Player_Previous = m_Player.FindAction("Previous", throwIfNotFound: true);
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
-        m_Player_Grapple = m_Player.FindAction("Grapple", throwIfNotFound: true);
-        m_Player_RopeUp = m_Player.FindAction("RopeUp", throwIfNotFound: true);
         m_Player_FPPMode = m_Player.FindAction("FPP Mode", throwIfNotFound: true);
         m_Player_SprintPressed = m_Player.FindAction("SprintPressed", throwIfNotFound: true);
         m_Player_SprintReleased = m_Player.FindAction("SprintReleased", throwIfNotFound: true);
         m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
         m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
         m_Player_Release = m_Player.FindAction("Release", throwIfNotFound: true);
-        m_Player_RopeDown = m_Player.FindAction("RopeDown", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1277,15 +1247,12 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Previous;
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Dash;
-    private readonly InputAction m_Player_Grapple;
-    private readonly InputAction m_Player_RopeUp;
     private readonly InputAction m_Player_FPPMode;
     private readonly InputAction m_Player_SprintPressed;
     private readonly InputAction m_Player_SprintReleased;
     private readonly InputAction m_Player_Crouch;
     private readonly InputAction m_Player_Slide;
     private readonly InputAction m_Player_Release;
-    private readonly InputAction m_Player_RopeDown;
     public struct PlayerActions
     {
         private @Third_Person_View m_Wrapper;
@@ -1297,15 +1264,12 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
         public InputAction @Previous => m_Wrapper.m_Player_Previous;
         public InputAction @Next => m_Wrapper.m_Player_Next;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
-        public InputAction @Grapple => m_Wrapper.m_Player_Grapple;
-        public InputAction @RopeUp => m_Wrapper.m_Player_RopeUp;
         public InputAction @FPPMode => m_Wrapper.m_Player_FPPMode;
         public InputAction @SprintPressed => m_Wrapper.m_Player_SprintPressed;
         public InputAction @SprintReleased => m_Wrapper.m_Player_SprintReleased;
         public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
         public InputAction @Slide => m_Wrapper.m_Player_Slide;
         public InputAction @Release => m_Wrapper.m_Player_Release;
-        public InputAction @RopeDown => m_Wrapper.m_Player_RopeDown;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1336,12 +1300,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
-            @Grapple.started += instance.OnGrapple;
-            @Grapple.performed += instance.OnGrapple;
-            @Grapple.canceled += instance.OnGrapple;
-            @RopeUp.started += instance.OnRopeUp;
-            @RopeUp.performed += instance.OnRopeUp;
-            @RopeUp.canceled += instance.OnRopeUp;
             @FPPMode.started += instance.OnFPPMode;
             @FPPMode.performed += instance.OnFPPMode;
             @FPPMode.canceled += instance.OnFPPMode;
@@ -1360,9 +1318,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
             @Release.started += instance.OnRelease;
             @Release.performed += instance.OnRelease;
             @Release.canceled += instance.OnRelease;
-            @RopeDown.started += instance.OnRopeDown;
-            @RopeDown.performed += instance.OnRopeDown;
-            @RopeDown.canceled += instance.OnRopeDown;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1388,12 +1343,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
-            @Grapple.started -= instance.OnGrapple;
-            @Grapple.performed -= instance.OnGrapple;
-            @Grapple.canceled -= instance.OnGrapple;
-            @RopeUp.started -= instance.OnRopeUp;
-            @RopeUp.performed -= instance.OnRopeUp;
-            @RopeUp.canceled -= instance.OnRopeUp;
             @FPPMode.started -= instance.OnFPPMode;
             @FPPMode.performed -= instance.OnFPPMode;
             @FPPMode.canceled -= instance.OnFPPMode;
@@ -1412,9 +1361,6 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
             @Release.started -= instance.OnRelease;
             @Release.performed -= instance.OnRelease;
             @Release.canceled -= instance.OnRelease;
-            @RopeDown.started -= instance.OnRopeDown;
-            @RopeDown.performed -= instance.OnRopeDown;
-            @RopeDown.canceled -= instance.OnRopeDown;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1604,15 +1550,12 @@ public partial class @Third_Person_View: IInputActionCollection2, IDisposable
         void OnPrevious(InputAction.CallbackContext context);
         void OnNext(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
-        void OnGrapple(InputAction.CallbackContext context);
-        void OnRopeUp(InputAction.CallbackContext context);
         void OnFPPMode(InputAction.CallbackContext context);
         void OnSprintPressed(InputAction.CallbackContext context);
         void OnSprintReleased(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnSlide(InputAction.CallbackContext context);
         void OnRelease(InputAction.CallbackContext context);
-        void OnRopeDown(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
